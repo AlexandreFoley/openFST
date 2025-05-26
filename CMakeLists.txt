@@ -1,0 +1,227 @@
+cmake_minimum_required(VERSION 3.14)
+project(OpenFst VERSION 1.8.4 LANGUAGES CXX)
+
+# Options to match Bazel configurations
+option(USE_LIBCPP "Use libc++ instead of stdlibc++" OFF)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(USE_CXX17 "Build with C++17 features" ON)
+
+# Optional extensions (matching configure.ac options)
+option(ENABLE_COMPACT_FSTS "Enable CompactFst extensions" OFF)
+option(ENABLE_COMPRESS "Enable compression extension" OFF)
+option(ENABLE_CONST_FSTS "Enable ConstFst extensions" OFF)
+option(ENABLE_FAR "Enable FAR extensions" OFF)
+option(ENABLE_LINEAR_FSTS "Enable LinearTagger/ClassifierFst extensions" OFF)
+option(ENABLE_LOOKAHEAD_FSTS "Enable LookAheadFst extensions" OFF)
+option(ENABLE_MPDT "Enable MPDT extensions" OFF)
+option(ENABLE_NGRAM_FSTS "Enable NGramFst extension" OFF)
+option(ENABLE_PDT "Enable PDT extensions" OFF)
+
+# Set C++ standard to C++17 by default (matching Bazel config)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Apply extra compiler flags from autoconf setup
+add_compile_options(-fno-exceptions -Wno-deprecated-declarations)
+
+# Platform-specific configurations
+if(ANDROID)
+  # Android specific settings
+  add_compile_options(-std=c++17)
+elseif(IOS)
+  # iOS specific settings
+  add_compile_options(-std=c++17)
+elseif(WIN32)
+  # Windows specific settings
+  add_compile_options(/std:c++17)
+elseif(APPLE)
+  # macOS specific settings
+  add_compile_options(-std=c++17)
+else()
+  # Linux and other platforms
+  add_compile_options(-std=c++17)
+endif()
+
+# Apply libc++ option if enabled (matching the Bazel libc++ config)
+if(USE_LIBCPP)
+  if(NOT WIN32) # Not applicable on Windows
+    add_compile_options(-stdlib=libc++)
+    add_link_options(-stdlib=libc++ -fuse-ld=lld)
+  endif()
+endif()
+
+# Define config.h (similar to autoconf generated one)
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/config.h
+  @ONLY
+)
+
+# Create our custom openfst_config.h
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/openfst_config.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/openfst_config.h
+  @ONLY
+)
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+
+# Include directories for all targets
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+)
+
+# Core library
+file(GLOB FST_SOURCES 
+  "src/lib/compat.cc"
+  "src/lib/encode.cc"
+  "src/lib/flags.cc" 
+  "src/lib/fst.cc" 
+  "src/lib/fst-types.cc"
+  "src/lib/mapped-file.cc" 
+  "src/lib/properties.cc" 
+  "src/lib/symbol-table.cc"
+  "src/lib/symbol-table-ops.cc" 
+  "src/lib/weight.cc" 
+  "src/lib/util.cc"
+)
+
+add_library(fst ${FST_SOURCES})
+set_target_properties(fst PROPERTIES 
+  VERSION ${PROJECT_VERSION}
+  SOVERSION 26 # From Makefile.am: libfst_la_LDFLAGS = -version-info 26:0:0
+)
+
+# Script library (required for most binaries)
+file(GLOB FSTSCRIPT_SOURCES
+  "src/script/arciterator-class.cc" 
+  "src/script/arcsort.cc" 
+  "src/script/closure.cc"
+  "src/script/compile.cc" 
+  "src/script/compose.cc" 
+  "src/script/concat.cc" 
+  "src/script/connect.cc"
+  "src/script/convert.cc" 
+  "src/script/decode.cc"
+  "src/script/determinize.cc" 
+  "src/script/difference.cc" 
+  "src/script/disambiguate.cc" 
+  "src/script/draw.cc" 
+  "src/script/encode.cc"
+  "src/script/encodemapper-class.cc" 
+  "src/script/epsnormalize.cc" 
+  "src/script/equal.cc" 
+  "src/script/equivalent.cc" 
+  "src/script/fst-class.cc"
+  "src/script/getters.cc" 
+  "src/script/info-impl.cc" 
+  "src/script/info.cc" 
+  "src/script/intersect.cc" 
+  "src/script/invert.cc" 
+  "src/script/isomorphic.cc" 
+  "src/script/map.cc"
+  "src/script/minimize.cc" 
+  "src/script/print.cc" 
+  "src/script/project.cc" 
+  "src/script/prune.cc" 
+  "src/script/push.cc" 
+  "src/script/randequivalent.cc"
+  "src/script/randgen.cc" 
+  "src/script/relabel.cc" 
+  "src/script/replace.cc" 
+  "src/script/reverse.cc" 
+  "src/script/reweight.cc" 
+  "src/script/rmepsilon.cc"
+  "src/script/shortest-distance.cc" 
+  "src/script/shortest-path.cc" 
+  "src/script/stateiterator-class.cc" 
+  "src/script/synchronize.cc"
+  "src/script/text-io.cc" 
+  "src/script/topsort.cc" 
+  "src/script/union.cc" 
+  "src/script/weight-class.cc" 
+  "src/script/verify.cc"
+)
+
+add_library(fstscript ${FSTSCRIPT_SOURCES})
+target_link_libraries(fstscript PUBLIC fst)
+set_target_properties(fstscript PROPERTIES 
+  VERSION ${PROJECT_VERSION}
+  SOVERSION 26 # From Makefile.am: libfstscript_la_LDFLAGS = -version-info 26:0:0
+)
+
+# Set output directory for libraries
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# Add binaries (utilities)
+set(FST_BINARIES
+  fstarcsort fstclosure fstcompile fstcompose fstconcat fstconnect
+  fstconvert fstdeterminize fstdifference fstdisambiguate fstdraw
+  fstencode fstepsnormalize fstequal fstequivalent fstinfo fstintersect
+  fstinvert fstisomorphic fstmap fstminimize fstprint fstproject
+  fstprune fstpush fstrandgen fstrelabel fstreplace fstreverse
+  fstreweight fstrmepsilon fstshortestdistance fstshortestpath fstsymbols
+  fstsynchronize fsttopsort fstunion
+)
+
+# Create binary targets
+foreach(BINARY ${FST_BINARIES})
+  add_executable(${BINARY} src/bin/${BINARY}-main.cc src/bin/${BINARY}.cc)
+  target_link_libraries(${BINARY} fstscript fst)
+endforeach()
+
+# Add extension directories if enabled
+if(ENABLE_COMPACT_FSTS)
+  add_subdirectory(src/extensions/compact)
+endif()
+
+if(ENABLE_COMPRESS)
+  add_subdirectory(src/extensions/compress)
+endif()
+
+if(ENABLE_CONST_FSTS)
+  add_subdirectory(src/extensions/const)
+endif()
+
+if(ENABLE_FAR)
+  add_subdirectory(src/extensions/far)
+endif()
+
+if(ENABLE_LINEAR_FSTS)
+  add_subdirectory(src/extensions/linear)
+endif()
+
+if(ENABLE_LOOKAHEAD_FSTS)
+  add_subdirectory(src/extensions/lookahead)
+endif()
+
+if(ENABLE_MPDT)
+  add_subdirectory(src/extensions/mpdt)
+endif()
+
+if(ENABLE_NGRAM_FSTS)
+  add_subdirectory(src/extensions/ngram)
+endif()
+
+if(ENABLE_PDT)
+  add_subdirectory(src/extensions/pdt)
+endif()
+
+# Installation rules
+install(TARGETS fst fstscript
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+)
+
+install(DIRECTORY src/include/fst
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.h"
+)
+
+# Install binaries
+install(TARGETS ${FST_BINARIES}
+  RUNTIME DESTINATION bin
+)
