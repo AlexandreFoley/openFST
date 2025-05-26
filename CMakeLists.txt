@@ -22,6 +22,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_program(CCACHE_PROGRAM ccache)
+if (CCACHE_PROGRAM)
+    message(STATUS "Using ccache: ${CCACHE_PROGRAM}")
+    set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif ()
+
 # Apply extra compiler flags from autoconf setup
 add_compile_options(-fno-exceptions -Wno-deprecated-declarations)
 
@@ -70,6 +77,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 # Include directories for all targets
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/src  # For test headers
 )
 
 # Core library
@@ -225,3 +233,99 @@ install(DIRECTORY src/include/fst
 install(TARGETS ${FST_BINARIES}
   RUNTIME DESTINATION bin
 )
+
+# Testing setup
+include(CTest)
+option(BUILD_TESTING "Build and run tests" OFF)
+if(BUILD_TESTING)
+  enable_testing()
+  
+  # Define test sources
+  set(FST_TEST_SRCS src/test/fst_test.cc)
+  set(WEIGHT_TEST_SRCS src/test/weight_test.cc)
+  set(ALGO_TEST_SRCS src/test/algo_test.cc)
+  
+  # Simple tests
+  add_executable(fst_test ${FST_TEST_SRCS})
+  target_link_libraries(fst_test PRIVATE fst fstscript)
+  add_test(NAME fst_test COMMAND fst_test)
+  
+  add_executable(weight_test ${WEIGHT_TEST_SRCS})
+  target_link_libraries(weight_test PRIVATE fst fstscript)
+  add_test(NAME weight_test COMMAND weight_test)
+  
+  # Algo tests with different semiring types
+  add_executable(algo_test_tropical ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_tropical PRIVATE TEST_TROPICAL)
+  target_link_libraries(algo_test_tropical PRIVATE fst fstscript)
+  target_link_options(algo_test_tropical PRIVATE -lm)
+  # Pass a safe value for cache_gc_limit
+  add_test(
+    NAME algo_test_tropical 
+    COMMAND algo_test_tropical 
+  )
+  
+  add_executable(algo_test_log ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_log PRIVATE TEST_LOG)
+  target_link_libraries(algo_test_log PRIVATE fst fstscript)
+  target_link_options(algo_test_log PRIVATE -lm)
+  add_test(
+    NAME algo_test_log 
+    COMMAND algo_test_log 
+  )
+  
+  add_executable(algo_test_minmax ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_minmax PRIVATE TEST_MINMAX)
+  target_link_libraries(algo_test_minmax PRIVATE fst fstscript)
+  target_link_options(algo_test_minmax PRIVATE -lm)
+  add_test(
+    NAME algo_test_minmax 
+    COMMAND algo_test_minmax 
+  )
+  
+  add_executable(algo_test_lexicographic ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_lexicographic PRIVATE TEST_LEXICOGRAPHIC)
+  target_link_libraries(algo_test_lexicographic PRIVATE fst fstscript)
+  target_link_options(algo_test_lexicographic PRIVATE -lm)
+  add_test(
+    NAME algo_test_lexicographic 
+    COMMAND algo_test_lexicographic 
+  )
+  
+  add_executable(algo_test_power ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_power PRIVATE TEST_POWER)
+  target_link_libraries(algo_test_power PRIVATE fst fstscript)
+  target_link_options(algo_test_power PRIVATE -lm)
+  add_test(
+    NAME algo_test_power 
+    COMMAND algo_test_power 
+  )
+  
+  # Additional string arc tests from Makefile.am
+  add_executable(algo_test_left_string ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_left_string PRIVATE TEST_LEFT_STRING)
+  target_link_libraries(algo_test_left_string PRIVATE fst fstscript)
+  target_link_options(algo_test_left_string PRIVATE -lm)
+  add_test(
+    NAME algo_test_left_string 
+    COMMAND algo_test_left_string 
+  )
+  
+  add_executable(algo_test_right_string ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_right_string PRIVATE TEST_RIGHT_STRING)
+  target_link_libraries(algo_test_right_string PRIVATE fst fstscript)
+  target_link_options(algo_test_right_string PRIVATE -lm)
+  add_test(
+    NAME algo_test_right_string 
+    COMMAND algo_test_right_string 
+  )
+  
+  add_executable(algo_test_gallic ${ALGO_TEST_SRCS})
+  target_compile_definitions(algo_test_gallic PRIVATE TEST_GALLIC)
+  target_link_libraries(algo_test_gallic PRIVATE fst fstscript)
+  target_link_options(algo_test_gallic PRIVATE -lm)
+  add_test(
+    NAME algo_test_gallic 
+    COMMAND algo_test_gallic
+  )
+endif()

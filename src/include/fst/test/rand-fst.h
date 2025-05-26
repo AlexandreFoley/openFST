@@ -18,6 +18,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <random>
+#include <cassert>
 
 #include <fst/log.h>
 #include <fst/mutable-fst.h>
@@ -27,6 +28,17 @@
 namespace fst {
 
 // Generates a random FST.
+/**
+ * @brief Generates a random FST with specified properties.
+ * 
+ * @param num_random_states upperbound on the number of states in the FST.
+ * @param num_random_arcs upperbound on the number of arcs in the FST.
+ * @param num_random_labels upperbound on the number of labels in the FST.
+ * @param acyclic_prob probability that the FST will be acyclic.
+ * @param generate a callable that generates the weight for each arc and final state.
+ * @param seed random seed for reproducibility.
+ * @param fst pointer to the MutableFst to be filled with the generated FST.
+ */
 template <class Arc, class Generate>
 void RandFst(const int num_random_states, const int num_random_arcs,
              const int num_random_labels, const float acyclic_prob,
@@ -47,6 +59,11 @@ void RandFst(const int num_random_states, const int num_random_arcs,
   std::mt19937_64 rand(seed);
   const StateId ns =
       std::uniform_int_distribution<>(0, num_random_states - 1)(rand);
+
+  fst->DeleteStates();
+
+  if (ns == 0) return;
+
   std::uniform_int_distribution<size_t> arc_dist(0, num_random_arcs - 1);
   std::uniform_int_distribution<Label> label_dist(0, num_random_labels - 1);
   std::uniform_int_distribution<StateId> ns_dist(0, ns - 1);
@@ -56,10 +73,7 @@ void RandFst(const int num_random_states, const int num_random_arcs,
     arc_direction = std::bernoulli_distribution(.5)(rand) ? FORWARD_DIRECTION
                                                           : REVERSE_DIRECTION;
   }
-
-  fst->DeleteStates();
-
-  if (ns == 0) return;
+  
   fst->AddStates(ns);
 
   const StateId start = ns_dist(rand);
