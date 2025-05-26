@@ -1,0 +1,44 @@
+
+# Ignore CMake build directories
+cmake-build-*/
+
+# Ignore editor specific files
+.idea/
+.vscode/
+
+# Ignore object files and libraries
+*.o
+*.a
+*.so
+*.dylib
+
+# Ignore executables
+bin/
+
+# Ignore generated files
+*.log
+*.cache
+
+
+# Ignore build directory
+build/
+
+# Ignore CMake build directories
+cmake-build-*/
+
+# Ignore editor specific files
+.idea/
+.vscode/
+
+# Ignore object files and libraries
+*.o
+*.a
+*.so
+*.dylib
+
+# Ignore executables
+bin/
+
+# Ignore generated files
+*.log
+*.cache
