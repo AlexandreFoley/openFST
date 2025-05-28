@@ -1,0 +1,36 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/OpenFstTargets.cmake")
+
+# Create aliases for compatibility
+set_and_check(OpenFst_INCLUDE_DIR "@PACKAGE_INCLUDE_INSTALL_DIR@")
+set_and_check(OpenFst_LIB_DIR "@PACKAGE_LIB_INSTALL_DIR@")
+set(OpenFst_LIBRARIES OpenFst::fst)
+set(OpenFst_FOUND TRUE)
+
+# Define components
+set(_OpenFst_FIND_PARTS_REQUIRED)
+if(OpenFst_FIND_COMPONENTS)
+  foreach(component ${OpenFst_FIND_COMPONENTS})
+    if(TARGET OpenFst::fst${component})
+      list(APPEND OpenFst_LIBRARIES OpenFst::fst${component})
+    else()
+      if(OpenFst_FIND_REQUIRED_${component})
+        list(APPEND _OpenFst_FIND_PARTS_REQUIRED ${component})
+      endif()
+    endif()
+  endforeach()
+endif()
+
+# Handle errors
+if(_OpenFst_FIND_PARTS_REQUIRED)
+  list(SORT _OpenFst_FIND_PARTS_REQUIRED)
+  string(REPLACE ";" ", " _OpenFst_FIND_PARTS_REQUIRED_STRING "${_OpenFst_FIND_PARTS_REQUIRED}")
+  set(OpenFst_NOT_FOUND_MESSAGE "The following required OpenFst components were not found: ${_OpenFst_FIND_PARTS_REQUIRED_STRING}")
+  set(OpenFst_FOUND FALSE)
+endif()
+
+# Report finding
+if(OpenFst_FOUND AND NOT OpenFst_FIND_QUIETLY)
+  message(STATUS "Found OpenFst ${OpenFst_VERSION}")
+endif()
