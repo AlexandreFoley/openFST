@@ -1,0 +1,78 @@
+buildType:
+  default: debug
+  choices:
+    debug:
+      short: Debug
+      long: Build with debugging information
+      buildType: Debug
+    release:
+      short: Release
+      long: Optimize for release
+      buildType: Release
+    relWithDebInfo:
+      short: RelWithDebInfo
+      long: Optimize with debugging information
+      buildType: RelWithDebInfo
+    minSizeRel:
+      short: MinSizeRel
+      long: Optimize for smallest size
+      buildType: MinSizeRel
+
+cppStandard:
+  default: cpp17
+  choices:
+    cpp14:
+      short: C++14
+      long: Build with C++14 standard
+      settings:
+        CXX_STANDARD: "14"
+    cpp17:
+      short: C++17
+      long: Build with C++17 standard
+      settings:
+        CXX_STANDARD: "17"
+    cpp20:
+      short: C++20
+      long: Build with C++20 standard
+      settings:
+        CXX_STANDARD: "20"
+
+options:
+  default: standard
+  choices:
+    standard:
+      short: Standard
+      long: Standard build with default options
+      settings:
+        BUILD_SHARED_LIBS: ON
+        ENABLE_FSTSCRIPT: ON
+        BUILD_TESTING: OFF
+    static:
+      short: Static
+      long: Build static libraries
+      settings:
+        BUILD_SHARED_LIBS: OFF
+        ENABLE_FSTSCRIPT: ON
+        BUILD_TESTING: OFF
+    testing:
+      short: Testing
+      long: Build with tests enabled
+      settings:
+        BUILD_SHARED_LIBS: ON
+        ENABLE_FSTSCRIPT: ON
+        BUILD_TESTING: ON
+    minimal:
+      short: Minimal
+      long: Build minimal libraries without scripts
+      settings:
+        BUILD_SHARED_LIBS: ON
+        ENABLE_FSTSCRIPT: OFF
+        BUILD_TESTING: OFF
+    libcpp:
+      short: LibC++
+      long: Build with libc++ instead of libstdc++
+      settings:
+        BUILD_SHARED_LIBS: ON
+        ENABLE_FSTSCRIPT: ON
+        BUILD_TESTING: OFF
+        USE_LIBCPP: ON
