@@ -81,7 +81,7 @@ include_directories(
 )
 
 # Core library
-file(GLOB FST_SOURCES 
+set(FST_SOURCES 
   "src/lib/compat.cc"
   "src/lib/encode.cc"
   "src/lib/flags.cc" 
@@ -102,7 +102,7 @@ set_target_properties(fst PROPERTIES
 )
 
 # Script library (required for most binaries)
-file(GLOB FSTSCRIPT_SOURCES
+set(FSTSCRIPT_SOURCES
   "src/script/arciterator-class.cc" 
   "src/script/arcsort.cc" 
   "src/script/closure.cc"
