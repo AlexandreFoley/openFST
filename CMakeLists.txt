@@ -7,15 +7,18 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(USE_CXX17 "Build with C++17 features" ON)
 
 # Optional extensions (matching configure.ac options)
-option(ENABLE_COMPACT_FSTS "Enable CompactFst extensions" OFF)
-option(ENABLE_COMPRESS "Enable compression extension" OFF)
-option(ENABLE_CONST_FSTS "Enable ConstFst extensions" OFF)
-option(ENABLE_FAR "Enable FAR extensions" OFF)
-option(ENABLE_LINEAR_FSTS "Enable LinearTagger/ClassifierFst extensions" OFF)
-option(ENABLE_LOOKAHEAD_FSTS "Enable LookAheadFst extensions" OFF)
-option(ENABLE_MPDT "Enable MPDT extensions" OFF)
-option(ENABLE_NGRAM_FSTS "Enable NGramFst extension" OFF)
-option(ENABLE_PDT "Enable PDT extensions" OFF)
+####### The extensions are not supported by the CMakeLists.txt for now. ########
+# option(ENABLE_COMPACT_FSTS "Enable CompactFst extensions" OFF)
+# option(ENABLE_COMPRESS "Enable compression extension" OFF)
+# option(ENABLE_CONST_FSTS "Enable ConstFst extensions" OFF)
+# option(ENABLE_FAR "Enable FAR extensions" OFF)
+# option(ENABLE_LINEAR_FSTS "Enable LinearTagger/ClassifierFst extensions" OFF)
+# option(ENABLE_LOOKAHEAD_FSTS "Enable LookAheadFst extensions" OFF)
+# option(ENABLE_MPDT "Enable MPDT extensions" OFF)
+# option(ENABLE_NGRAM_FSTS "Enable NGramFst extension" OFF)
+# option(ENABLE_PDT "Enable PDT extensions" OFF)
+################################################################################
+option(ENABLE_FSTSCRIPT "Build the fstscript library" ON)
 
 # Set C++ standard to C++17 by default (matching Bazel config)
 set(CMAKE_CXX_STANDARD 17)
@@ -28,35 +31,6 @@ if (CCACHE_PROGRAM)
     set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
     set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
 endif ()
-
-# Apply extra compiler flags from autoconf setup
-add_compile_options(-fno-exceptions -Wno-deprecated-declarations)
-
-# Platform-specific configurations
-if(ANDROID)
-  # Android specific settings
-  add_compile_options(-std=c++17)
-elseif(IOS)
-  # iOS specific settings
-  add_compile_options(-std=c++17)
-elseif(WIN32)
-  # Windows specific settings
-  add_compile_options(/std:c++17)
-elseif(APPLE)
-  # macOS specific settings
-  add_compile_options(-std=c++17)
-else()
-  # Linux and other platforms
-  add_compile_options(-std=c++17)
-endif()
-
-# Apply libc++ option if enabled (matching the Bazel libc++ config)
-if(USE_LIBCPP)
-  if(NOT WIN32) # Not applicable on Windows
-    add_compile_options(-stdlib=libc++)
-    add_link_options(-stdlib=libc++ -fuse-ld=lld)
-  endif()
-endif()
 
 # Define config.h (similar to autoconf generated one)
 configure_file(
@@ -72,84 +46,52 @@ configure_file(
   @ONLY
 )
 
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+# include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Include directories for all targets
-include_directories(
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/include
-  ${CMAKE_CURRENT_SOURCE_DIR}/src  # For test headers
-)
+# include_directories(
+#   ${CMAKE_CURRENT_SOURCE_DIR}/src/include
+#   ${CMAKE_CURRENT_SOURCE_DIR}/src  # For test headers
+# )
 
 # Core library
 set(FST_SOURCES 
-  "src/lib/compat.cc"
-  "src/lib/encode.cc"
-  "src/lib/flags.cc" 
-  "src/lib/fst.cc" 
-  "src/lib/fst-types.cc"
-  "src/lib/mapped-file.cc" 
-  "src/lib/properties.cc" 
-  "src/lib/symbol-table.cc"
-  "src/lib/symbol-table-ops.cc" 
-  "src/lib/weight.cc" 
-  "src/lib/util.cc"
+  "src/lib/compat.cc"  "src/lib/encode.cc"  "src/lib/flags.cc"   "src/lib/fst.cc"   "src/lib/fst-types.cc"
+  "src/lib/mapped-file.cc"   "src/lib/properties.cc"   "src/lib/symbol-table.cc"  "src/lib/symbol-table-ops.cc" 
+  "src/lib/weight.cc"   "src/lib/util.cc"
 )
 
 add_library(fst ${FST_SOURCES})
+target_include_directories(fst PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+# Add platform-specific flags:
+target_compile_options(fst PRIVATE
+  $<$<CXX_COMPILER_ID:GNU,Clang>:-fno-exceptions -Wno-deprecated-declarations>
+  $<$<CXX_COMPILER_ID:MSVC>:/EHsc /wd4267 /wd4244>
+)
 set_target_properties(fst PROPERTIES 
   VERSION ${PROJECT_VERSION}
   SOVERSION 26 # From Makefile.am: libfst_la_LDFLAGS = -version-info 26:0:0
 )
 
+if(ENABLE_FSTSCRIPT)
 # Script library (required for most binaries)
 set(FSTSCRIPT_SOURCES
-  "src/script/arciterator-class.cc" 
-  "src/script/arcsort.cc" 
-  "src/script/closure.cc"
-  "src/script/compile.cc" 
-  "src/script/compose.cc" 
-  "src/script/concat.cc" 
-  "src/script/connect.cc"
-  "src/script/convert.cc" 
-  "src/script/decode.cc"
-  "src/script/determinize.cc" 
-  "src/script/difference.cc" 
-  "src/script/disambiguate.cc" 
-  "src/script/draw.cc" 
-  "src/script/encode.cc"
-  "src/script/encodemapper-class.cc" 
-  "src/script/epsnormalize.cc" 
-  "src/script/equal.cc" 
-  "src/script/equivalent.cc" 
-  "src/script/fst-class.cc"
-  "src/script/getters.cc" 
-  "src/script/info-impl.cc" 
-  "src/script/info.cc" 
-  "src/script/intersect.cc" 
-  "src/script/invert.cc" 
-  "src/script/isomorphic.cc" 
-  "src/script/map.cc"
-  "src/script/minimize.cc" 
-  "src/script/print.cc" 
-  "src/script/project.cc" 
-  "src/script/prune.cc" 
-  "src/script/push.cc" 
-  "src/script/randequivalent.cc"
-  "src/script/randgen.cc" 
-  "src/script/relabel.cc" 
-  "src/script/replace.cc" 
-  "src/script/reverse.cc" 
-  "src/script/reweight.cc" 
-  "src/script/rmepsilon.cc"
-  "src/script/shortest-distance.cc" 
-  "src/script/shortest-path.cc" 
-  "src/script/stateiterator-class.cc" 
-  "src/script/synchronize.cc"
-  "src/script/text-io.cc" 
-  "src/script/topsort.cc" 
-  "src/script/union.cc" 
-  "src/script/weight-class.cc" 
-  "src/script/verify.cc"
+  "src/script/arciterator-class.cc"   "src/script/arcsort.cc"   "src/script/closure.cc"  "src/script/compile.cc" 
+  "src/script/compose.cc"   "src/script/concat.cc"   "src/script/connect.cc"  "src/script/convert.cc" 
+  "src/script/decode.cc"  "src/script/determinize.cc"   "src/script/difference.cc"   "src/script/disambiguate.cc" 
+  "src/script/draw.cc"   "src/script/encode.cc"  "src/script/encodemapper-class.cc"   "src/script/epsnormalize.cc" 
+  "src/script/equal.cc"   "src/script/equivalent.cc"   "src/script/fst-class.cc"  "src/script/getters.cc" 
+  "src/script/info-impl.cc"   "src/script/info.cc"   "src/script/intersect.cc"   "src/script/invert.cc" 
+  "src/script/isomorphic.cc"   "src/script/map.cc"  "src/script/minimize.cc"   "src/script/print.cc" 
+  "src/script/project.cc"   "src/script/prune.cc"   "src/script/push.cc"   "src/script/randequivalent.cc"
+  "src/script/randgen.cc"   "src/script/relabel.cc"   "src/script/replace.cc"   "src/script/reverse.cc" 
+  "src/script/reweight.cc"   "src/script/rmepsilon.cc"  "src/script/shortest-distance.cc"   "src/script/shortest-path.cc" 
+  "src/script/stateiterator-class.cc"   "src/script/synchronize.cc"  "src/script/text-io.cc"   "src/script/topsort.cc" 
+  "src/script/union.cc"   "src/script/weight-class.cc"   "src/script/verify.cc"
 )
 
 add_library(fstscript ${FSTSCRIPT_SOURCES})
@@ -158,11 +100,10 @@ set_target_properties(fstscript PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 26 # From Makefile.am: libfstscript_la_LDFLAGS = -version-info 26:0:0
 )
-
-# Set output directory for libraries
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+# Set output directories using generator expressions
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/bin>)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib>)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/lib>)
 
 # Add binaries (utilities)
 set(FST_BINARIES
@@ -180,58 +121,35 @@ foreach(BINARY ${FST_BINARIES})
   add_executable(${BINARY} src/bin/${BINARY}-main.cc src/bin/${BINARY}.cc)
   target_link_libraries(${BINARY} fstscript fst)
 endforeach()
+endif(ENABLE_FSTSCRIPT)
 
-# Add extension directories if enabled
-if(ENABLE_COMPACT_FSTS)
-  add_subdirectory(src/extensions/compact)
-endif()
-
-if(ENABLE_COMPRESS)
-  add_subdirectory(src/extensions/compress)
-endif()
-
-if(ENABLE_CONST_FSTS)
-  add_subdirectory(src/extensions/const)
-endif()
-
-if(ENABLE_FAR)
-  add_subdirectory(src/extensions/far)
-endif()
-
-if(ENABLE_LINEAR_FSTS)
-  add_subdirectory(src/extensions/linear)
-endif()
-
-if(ENABLE_LOOKAHEAD_FSTS)
-  add_subdirectory(src/extensions/lookahead)
-endif()
-
-if(ENABLE_MPDT)
-  add_subdirectory(src/extensions/mpdt)
-endif()
-
-if(ENABLE_NGRAM_FSTS)
-  add_subdirectory(src/extensions/ngram)
-endif()
-
-if(ENABLE_PDT)
-  add_subdirectory(src/extensions/pdt)
-endif()
-
-# Installation rules
+# Installation rules using generator expressions
+include(GNUInstallDirs)
 install(TARGETS fst fstscript
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
+  EXPORT OpenFstTargets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 install(DIRECTORY src/include/fst
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.h"
 )
 
 # Install binaries
-install(TARGETS ${FST_BINARIES}
-  RUNTIME DESTINATION bin
+if(ENABLE_FSTSCRIPT)
+  install(TARGETS ${FST_BINARIES}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  )
+endif()
+
+# Export targets for usage in other projects
+install(EXPORT OpenFstTargets
+  FILE OpenFstTargets.cmake
+  NAMESPACE OpenFst::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
 )
 
 # Testing setup
@@ -258,8 +176,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_tropical ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_tropical PRIVATE TEST_TROPICAL)
   target_link_libraries(algo_test_tropical PRIVATE fst fstscript)
-  target_link_options(algo_test_tropical PRIVATE -lm)
-  # Pass a safe value for cache_gc_limit
   add_test(
     NAME algo_test_tropical 
     COMMAND algo_test_tropical 
@@ -268,7 +184,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_log ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_log PRIVATE TEST_LOG)
   target_link_libraries(algo_test_log PRIVATE fst fstscript)
-  target_link_options(algo_test_log PRIVATE -lm)
   add_test(
     NAME algo_test_log 
     COMMAND algo_test_log 
@@ -277,7 +192,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_minmax ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_minmax PRIVATE TEST_MINMAX)
   target_link_libraries(algo_test_minmax PRIVATE fst fstscript)
-  target_link_options(algo_test_minmax PRIVATE -lm)
   add_test(
     NAME algo_test_minmax 
     COMMAND algo_test_minmax 
@@ -286,7 +200,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_lexicographic ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_lexicographic PRIVATE TEST_LEXICOGRAPHIC)
   target_link_libraries(algo_test_lexicographic PRIVATE fst fstscript)
-  target_link_options(algo_test_lexicographic PRIVATE -lm)
   add_test(
     NAME algo_test_lexicographic 
     COMMAND algo_test_lexicographic 
@@ -295,7 +208,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_power ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_power PRIVATE TEST_POWER)
   target_link_libraries(algo_test_power PRIVATE fst fstscript)
-  target_link_options(algo_test_power PRIVATE -lm)
   add_test(
     NAME algo_test_power 
     COMMAND algo_test_power 
@@ -305,7 +217,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_left_string ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_left_string PRIVATE TEST_LEFT_STRING)
   target_link_libraries(algo_test_left_string PRIVATE fst fstscript)
-  target_link_options(algo_test_left_string PRIVATE -lm)
   add_test(
     NAME algo_test_left_string 
     COMMAND algo_test_left_string 
@@ -314,7 +225,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_right_string ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_right_string PRIVATE TEST_RIGHT_STRING)
   target_link_libraries(algo_test_right_string PRIVATE fst fstscript)
-  target_link_options(algo_test_right_string PRIVATE -lm)
   add_test(
     NAME algo_test_right_string 
     COMMAND algo_test_right_string 
@@ -323,7 +233,6 @@ if(BUILD_TESTING)
   add_executable(algo_test_gallic ${ALGO_TEST_SRCS})
   target_compile_definitions(algo_test_gallic PRIVATE TEST_GALLIC)
   target_link_libraries(algo_test_gallic PRIVATE fst fstscript)
-  target_link_options(algo_test_gallic PRIVATE -lm)
   add_test(
     NAME algo_test_gallic 
     COMMAND algo_test_gallic
