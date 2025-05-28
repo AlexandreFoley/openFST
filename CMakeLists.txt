@@ -1,10 +1,16 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.30)
 project(OpenFst VERSION 1.8.4 LANGUAGES CXX)
 
 # Options to match Bazel configurations
 option(USE_LIBCPP "Use libc++ instead of stdlibc++" OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(USE_CXX17 "Build with C++17 features" ON)
+option(USE_CXX20 "Build with C++20 features" OFF)
+
+if (USE_CXX17 AND USE_CXX20)
+  message(WARNING "Both USE_CXX17 and USE_CXX20 are enabled. Using C++20 features.")
+  set(USE_CXX17 OFF CACHE BOOL "Use C++17 features" FORCE)
+endif()
 
 # Optional extensions (matching configure.ac options)
 ####### The extensions are not supported by the CMakeLists.txt for now. ########
@@ -21,8 +27,14 @@ option(USE_CXX17 "Build with C++17 features" ON)
 option(ENABLE_FSTSCRIPT "Build the fstscript library" ON)
 option(BUILD_TESTING "Build and run tests" OFF)
 
-# Set C++ standard to C++17 by default (matching Bazel config)
+if (USE_CXX17)
 set(CMAKE_CXX_STANDARD 17)
+elseif (USE_CXX20)
+set(CMAKE_CXX_STANDARD 20)
+else()
+set(CMAKE_CXX_STANDARD 14)
+message(STATUS "Using C++14 standard as last resort")
+endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -46,14 +58,6 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/openfst_config.h
   @ONLY
 )
-
-# include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-# Include directories for all targets
-# include_directories(
-#   ${CMAKE_CURRENT_SOURCE_DIR}/src/include
-#   ${CMAKE_CURRENT_SOURCE_DIR}/src  # For test headers
-# )
 
 # Core library
 set(FST_SOURCES 
