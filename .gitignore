@@ -1,6 +1,8 @@
 
 # Ignore CMake build directories
 cmake-build-*/
+build*/
+install*/
 
 # Ignore editor specific files
 .idea/

@@ -19,6 +19,7 @@ option(USE_CXX17 "Build with C++17 features" ON)
 # option(ENABLE_PDT "Enable PDT extensions" OFF)
 ################################################################################
 option(ENABLE_FSTSCRIPT "Build the fstscript library" ON)
+option(BUILD_TESTING "Build and run tests" OFF)
 
 # Set C++ standard to C++17 by default (matching Bazel config)
 set(CMAKE_CXX_STANDARD 17)
@@ -135,7 +136,7 @@ install(TARGETS fst fstscript
 
 install(DIRECTORY src/include/fst
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  FILES_MATCHING PATTERN "*.h"
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.inc"
 )
 
 # Install binaries
@@ -152,10 +153,30 @@ install(EXPORT OpenFstTargets
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
 )
 
+# Generate and install CMake config files for find_package support
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenFstConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
+  PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
+)
+
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
+)
+
 # Testing setup
-include(CTest)
-option(BUILD_TESTING "Build and run tests" OFF)
 if(BUILD_TESTING)
+  include(CTest)
   enable_testing()
   
   # Define test sources
