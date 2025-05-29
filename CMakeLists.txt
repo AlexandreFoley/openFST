@@ -48,7 +48,6 @@ configure_file(
   @ONLY
 )
 
-
 # Core library
 set(FST_SOURCES 
   "src/lib/compat.cc"  "src/lib/encode.cc"  "src/lib/flags.cc"   "src/lib/fst.cc"   "src/lib/fst-types.cc"
@@ -71,7 +70,6 @@ set_target_properties(fst PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 26 # From Makefile.am: libfst_la_LDFLAGS = -version-info 26:0:0
 )
-add_library(OpenFST::fst ALIAS fst)
 
 if(ENABLE_FSTSCRIPT)
 # Script library (required for most binaries)
@@ -117,7 +115,6 @@ foreach(BINARY ${FST_BINARIES})
   add_executable(${BINARY} src/bin/${BINARY}-main.cc src/bin/${BINARY}.cc)
   target_link_libraries(${BINARY} fstscript fst)
 endforeach()
-add_library(OpenFST::fstscript ALIAS fstscript)
 endif(ENABLE_FSTSCRIPT)
 
 # Installation rules using generator expressions
@@ -178,8 +175,6 @@ install(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/OpenFSTConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFST
 )
-
-
 
 # Testing setup
 if(BUILD_TESTING)
