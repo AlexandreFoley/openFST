@@ -1,3 +1,7 @@
+This fork of openFST adds a cmake configuration. It support configuring the
+build for the library and the scripting tools. The extensions are not 
+supported yet.
+
 OpenFst is a library for constructing, combining, optimizing, and searching
 weighted finite-state transducers (FSTs).
 
