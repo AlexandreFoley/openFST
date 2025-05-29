@@ -109,7 +109,7 @@ void RandFst(const int num_random_states, const int num_random_arcs,
     fst->SetFinal(s, generate());
   }
   VLOG(1) << "Check FST for sanity (including property bits).";
-  CHECK(Verify(*fst));
+  FST_CHECK(Verify(*fst));
 
   // Get/compute all properties.
   const uint64_t props = fst->Properties(kFstProperties, true);

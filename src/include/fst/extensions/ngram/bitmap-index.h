@@ -248,34 +248,34 @@ class BitmapIndex {
 
     void set_absolute_ones_count(uint32_t v) { absolute_ones_count_ = v; }
     void set_relative_ones_count_1(uint32_t v) {
-      DCHECK_LE(v, kStorageBitSize);
+      DFST_CHECK_LE(v, kStorageBitSize);
       relative_ones_counts_[0][0] = v;
     }
     void set_relative_ones_count_2(uint32_t v) {
-      DCHECK_LE(v, 2 * kStorageBitSize);
+      DFST_CHECK_LE(v, 2 * kStorageBitSize);
       relative_ones_counts_[0][1] = v;
     }
     void set_relative_ones_count_3(uint32_t v) {
-      DCHECK_LE(v, 3 * kStorageBitSize);
+      DFST_CHECK_LE(v, 3 * kStorageBitSize);
       relative_ones_counts_[0][2] = v;
     }
     void set_relative_ones_count_4(uint32_t v) {
-      DCHECK_LE(v, 4 * kStorageBitSize);
-      DCHECK_EQ(relative_ones_counts_[1][0], 0);
-      DCHECK_EQ(relative_ones_counts_[1][1], 0);
-      DCHECK_EQ(relative_ones_counts_[1][2], 0);
+      DFST_CHECK_LE(v, 4 * kStorageBitSize);
+      DFST_CHECK_EQ(relative_ones_counts_[1][0], 0);
+      DFST_CHECK_EQ(relative_ones_counts_[1][1], 0);
+      DFST_CHECK_EQ(relative_ones_counts_[1][2], 0);
       relative_ones_count_4_ = v;
     }
     void set_relative_ones_count_5(uint32_t v) {
-      DCHECK_LE(v, 5 * kStorageBitSize);
+      DFST_CHECK_LE(v, 5 * kStorageBitSize);
       relative_ones_counts_[1][0] = v - relative_ones_count_4();
     }
     void set_relative_ones_count_6(uint32_t v) {
-      DCHECK_LE(v, 6 * kStorageBitSize);
+      DFST_CHECK_LE(v, 6 * kStorageBitSize);
       relative_ones_counts_[1][1] = v - relative_ones_count_4();
     }
     void set_relative_ones_count_7(uint32_t v) {
-      DCHECK_LE(v, 7 * kStorageBitSize);
+      DFST_CHECK_LE(v, 7 * kStorageBitSize);
       relative_ones_counts_[1][2] = v - relative_ones_count_4();
     }
 

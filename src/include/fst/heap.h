@@ -83,7 +83,7 @@ class Heap {
 
   // Returns the least value.
   Value Pop() {
-    DCHECK(!Empty());
+    DFST_CHECK(!Empty());
     Value top = values_.front();
     Swap(0, size_ - 1);
     size_--;
@@ -94,13 +94,13 @@ class Heap {
   // Returns the least value w.r.t. the comparison function from the
   // heap.
   const Value &Top() const {
-    DCHECK(!Empty());
+    DFST_CHECK(!Empty());
     return values_.front();
   }
 
   // Returns the element for the given key.
   const Value &Get(int key) const {
-    DCHECK_LT(key, pos_.size());
+    DFST_CHECK_LT(key, pos_.size());
     return values_[pos_[key]];
   }
 

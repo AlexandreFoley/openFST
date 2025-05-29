@@ -62,21 +62,21 @@ inline void FstCheck(bool x, std::string_view expr, std::string_view file,
   }
 }
 
-#define CHECK(x) FstCheck(static_cast<bool>(x), #x, __FILE__, __LINE__)
-#define CHECK_EQ(x, y) CHECK((x) == (y))
-#define CHECK_LT(x, y) CHECK((x) < (y))
-#define CHECK_GT(x, y) CHECK((x) > (y))
-#define CHECK_LE(x, y) CHECK((x) <= (y))
-#define CHECK_GE(x, y) CHECK((x) >= (y))
-#define CHECK_NE(x, y) CHECK((x) != (y))
+#define FST_CHECK(x) FstCheck(static_cast<bool>(x), #x, __FILE__, __LINE__)
+#define FST_CHECK_EQ(x, y) FST_CHECK((x) == (y))
+#define FST_CHECK_LT(x, y) FST_CHECK((x) < (y))
+#define FST_CHECK_GT(x, y) FST_CHECK((x) > (y))
+#define FST_CHECK_LE(x, y) FST_CHECK((x) <= (y))
+#define FST_CHECK_GE(x, y) FST_CHECK((x) >= (y))
+#define FST_CHECK_NE(x, y) FST_CHECK((x) != (y))
 
 // Debug checks.
-#define DCHECK(x) assert(x)
-#define DCHECK_EQ(x, y) DCHECK((x) == (y))
-#define DCHECK_LT(x, y) DCHECK((x) < (y))
-#define DCHECK_GT(x, y) DCHECK((x) > (y))
-#define DCHECK_LE(x, y) DCHECK((x) <= (y))
-#define DCHECK_GE(x, y) DCHECK((x) >= (y))
-#define DCHECK_NE(x, y) DCHECK((x) != (y))
+#define DFST_CHECK(x) assert(x)
+#define DFST_CHECK_EQ(x, y) DFST_CHECK((x) == (y))
+#define DFST_CHECK_LT(x, y) DFST_CHECK((x) < (y))
+#define DFST_CHECK_GT(x, y) DFST_CHECK((x) > (y))
+#define DFST_CHECK_LE(x, y) DFST_CHECK((x) <= (y))
+#define DFST_CHECK_GE(x, y) DFST_CHECK((x) >= (y))
+#define DFST_CHECK_NE(x, y) DFST_CHECK((x) != (y))
 
 #endif  // FST_LOG_H_

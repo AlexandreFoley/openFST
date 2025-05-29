@@ -745,7 +745,7 @@ class FstImpl {
     // These cannot become inconsistent, but this means that
     // incorrectly set properties will remain incorrect.
     const uint64_t properties = properties_.load(std::memory_order_relaxed);
-    DCHECK(internal::CompatProperties(properties, props));
+    DFST_CHECK(internal::CompatProperties(properties, props));
     const uint64_t old_props = properties & mask;
     const uint64_t old_mask = internal::KnownProperties(old_props);
     const uint64_t discovered_mask = mask & ~old_mask;

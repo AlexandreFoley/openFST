@@ -311,9 +311,9 @@ template <class A>
 inline typename A::Label LinearTaggerFstImpl<A>::ShiftBuffer(
     const std::vector<Label> &state, Label ilabel,
     std::vector<Label> *next_stub_) {
-  DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
   if (delay_ == 0) {
-    DCHECK_GT(ilabel, 0);
+    DFST_CHECK_GT(ilabel, 0);
     return ilabel;
   } else {
     (*next_stub_)[BufferEnd(*next_stub_) - next_stub_->begin() - 1] = ilabel;
@@ -325,8 +325,8 @@ template <class A>
 inline A LinearTaggerFstImpl<A>::MakeArc(const std::vector<Label> &state,
                                          Label ilabel, Label olabel,
                                          std::vector<Label> *next_stub_) {
-  DCHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
-  DCHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
+  DFST_CHECK(ilabel > 0 || ilabel == LinearFstData<A>::kEndOfSentence);
+  DFST_CHECK(olabel > 0 || olabel == LinearFstData<A>::kStartOfSentence);
   Weight weight(Weight::One());
   data_->TakeTransition(BufferEnd(state), InternalBegin(state),
                         InternalEnd(state), ilabel, olabel, next_stub_,
@@ -775,8 +775,8 @@ class LinearClassifierFstImpl : public CacheImpl<A> {
       return Weight::Zero();
     }
     Label pred = Prediction(state);
-    DCHECK_GT(pred, 0);
-    DCHECK_LE(pred, num_classes_);
+    DFST_CHECK_GT(pred, 0);
+    DFST_CHECK_LE(pred, num_classes_);
     Weight final_weight = Weight::One();
     for (size_t group = 0; group < num_groups_; ++group) {
       int group_id = GroupId(pred, group);
@@ -838,8 +838,8 @@ void LinearClassifierFstImpl<A>::Expand(StateId s) {
     }
   } else {
     Label pred = Prediction(state_stub_);
-    DCHECK_GT(pred, 0);
-    DCHECK_LE(pred, num_classes_);
+    DFST_CHECK_GT(pred, 0);
+    DFST_CHECK_LE(pred, num_classes_);
     for (Label ilabel = data_->MinInputLabel();
          ilabel <= data_->MaxInputLabel(); ++ilabel) {
       Prediction(next_stub_) = pred;

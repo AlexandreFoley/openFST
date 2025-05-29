@@ -947,7 +947,7 @@ class StateIterator<NGramFst<A>> : public StateIteratorBase<A> {
   bool Done() const final { return s_ >= num_states_; }
 
   StateId Value() const final {
-    DCHECK(!Done());
+    DFST_CHECK(!Done());
     return s_;
   }
 
@@ -982,7 +982,7 @@ class ArcIterator<NGramFst<A>> : public ArcIteratorBase<A> {
   }
 
   const Arc &Value() const final {
-    DCHECK(!Done());
+    DFST_CHECK(!Done());
     bool eps = (inst_.node_ != 0 && i_ == 0);
     StateId state = (inst_.node_ == 0) ? i_ : i_ - 1;
     if (flags_ & lazy_ & (kArcILabelValue | kArcOLabelValue)) {

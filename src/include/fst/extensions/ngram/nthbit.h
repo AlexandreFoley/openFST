@@ -36,9 +36,9 @@ namespace fst {
 // Returns the position (0-63) of the r-th 1 bit in v.
 // 0 <= r < CountOnes(v) <= 64. Therefore, v must not be 0.
 inline int nth_bit(uint64_t v, uint32_t r) {
-  DCHECK_NE(v, 0);
-  DCHECK_LE(0, r);
-  DCHECK_LT(r, __builtin_popcountll(v));
+  DFST_CHECK_NE(v, 0);
+  DFST_CHECK_LE(0, r);
+  DFST_CHECK_LT(r, __builtin_popcountll(v));
 
   // PDEP example from https://stackoverflow.com/a/27453505
   // __builtin_ctzll is UB for 0, but the conditions above ensure that can't
@@ -87,9 +87,9 @@ inline int nth_bit(const uint64_t v, const uint32_t r) {
   constexpr uint64_t kOnesStep8 = 0x0101010101010101;
   constexpr uint64_t kMSBsStep8 = 0x80 * kOnesStep8;
 
-  DCHECK_NE(v, 0);
-  DCHECK_LE(0, r);
-  DCHECK_LT(r, __builtin_popcountll(v));
+  DFST_CHECK_NE(v, 0);
+  DFST_CHECK_LE(0, r);
+  DFST_CHECK_LT(r, __builtin_popcountll(v));
 
 #if defined(__aarch64__)
   // Use the ARM64 CNT instruction to compute a byte-wise popcount.

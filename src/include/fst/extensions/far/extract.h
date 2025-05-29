@@ -41,9 +41,9 @@ inline void FarWriteFst(const Fst<Arc> *fst, std::string_view key,
                         std::string *okey, int *nrep, int32_t generate_sources,
                         int i, std::string_view source_prefix,
                         std::string_view source_suffix) {
-  DCHECK_NE(fst, nullptr);
-  DCHECK_NE(okey, nullptr);
-  DCHECK_NE(nrep, nullptr);
+  DFST_CHECK_NE(fst, nullptr);
+  DFST_CHECK_NE(okey, nullptr);
+  DFST_CHECK_NE(nrep, nullptr);
   if (key == *okey) {
     ++*nrep;
   } else {

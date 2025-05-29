@@ -64,8 +64,8 @@ void Relabel(
       auto arc = aiter.Value();
       // dense_hash_map does not support find on the empty_key_val.
       // These labels should never be in an FST anyway.
-      DCHECK_NE(arc.ilabel, kNoLabel);
-      DCHECK_NE(arc.olabel, kNoLabel);
+      DFST_CHECK_NE(arc.ilabel, kNoLabel);
+      DFST_CHECK_NE(arc.olabel, kNoLabel);
       // Relabels input.
       if (auto it = input_map.find(arc.ilabel); it != input_map.end()) {
         if (it->second == kNoLabel) {

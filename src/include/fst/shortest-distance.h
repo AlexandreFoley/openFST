@@ -119,14 +119,14 @@ class ShortestDistanceState {
       radder_.push_back(Adder<Weight>());
       enqueued_.push_back(false);
     }
-    DCHECK_LT(index, distance_->size());
+    DFST_CHECK_LT(index, distance_->size());
   }
 
   void EnsureSourcesIndexIsValid(std::size_t index) {
     while (sources_.size() <= index) {
       sources_.push_back(kNoStateId);
     }
-    DCHECK_LT(index, sources_.size());
+    DFST_CHECK_LT(index, sources_.size());
   }
 
   const Fst<Arc> &fst_;
@@ -326,7 +326,7 @@ void ShortestDistance(const Fst<Arc> &fst,
       distance->assign(1, Arc::Weight::NoWeight());
       return;
     }
-    DCHECK_GE(rdistance.size(), 1);  // reversing added one state
+    DFST_CHECK_GE(rdistance.size(), 1);  // reversing added one state
     distance->reserve(rdistance.size() - 1);
     while (distance->size() < rdistance.size() - 1) {
       distance->push_back(rdistance[distance->size() + 1].Reverse());

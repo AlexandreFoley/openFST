@@ -159,7 +159,7 @@ class PdtParenReachable {
       // Cannot dereference iterators if the vector is empty, but that never
       // happens. ComputeStateSet always adds something to the vector,
       // and never leaves an empty vector.
-      DCHECK(!parens->second.empty());
+      DFST_CHECK(!parens->second.empty());
       return ParenIterator(&*parens->second.begin(), &*parens->second.end());
     } else {
       return ParenIterator();
@@ -189,7 +189,7 @@ class PdtParenReachable {
       // Cannot dereference iterators if the vector is empty, but that never
       // happens. ComputeStateSet always adds something to the vector,
       // and never leaves an empty vector.
-      DCHECK(!paren_arcs->second.empty());
+      DFST_CHECK(!paren_arcs->second.empty());
       return ParenArcIterator(&*paren_arcs->second.begin(),
                               &*paren_arcs->second.end());
     } else {
@@ -406,7 +406,7 @@ class PdtBalanceData {
         const State key(paren_id, open_dest);
         open_paren_set_.erase(key);
         const auto close_paren_it = close_paren_map_.find(key);
-        CHECK(close_paren_it != close_paren_map_.end());
+        FST_CHECK(close_paren_it != close_paren_map_.end());
         std::vector<StateId> &close_sources = close_paren_it->second;
         std::sort(close_sources.begin(), close_sources.end());
         auto unique_end =

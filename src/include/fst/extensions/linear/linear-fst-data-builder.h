@@ -708,7 +708,7 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
        i >= 0 && output[i] == LinearFstData<A>::kEndOfSentence; --i)
     ++num_output_end;
 
-  DCHECK_LE(num_output_end, 1);
+  DFST_CHECK_LE(num_output_end, 1);
 
   if (input.size() - num_input_start < future_size_) {
     LOG(WARNING) << "Ignored: start-of-sentence in the future!";
@@ -790,7 +790,7 @@ bool FeatureGroupBuilder<A>::AddWeight(const std::vector<Label> &input,
          --pad, ++opos)
       cur = trie_.Insert(cur, InputOutputLabel(kNoLabel, output[opos]));
   }
-  CHECK_EQ(iend - ipos, oend - opos);
+  FST_CHECK_EQ(iend - ipos, oend - opos);
   for (; ipos != iend; ++ipos, ++opos)
     cur = trie_.Insert(cur, InputOutputLabel(input[ipos], output[opos]));
   // We only need to attach final weight when there is an output
@@ -937,7 +937,7 @@ void FeatureGroupBuilder<A>::BuildBackLinks() {
             int problem_link = only_input_link != kNoTrieNodeId
                                    ? only_input_link
                                    : only_output_link;
-            CHECK_NE(problem_link, kNoTrieNodeId);
+            FST_CHECK_NE(problem_link, kNoTrieNodeId);
             FSTERROR() << "Branching back-off chain:\n"
                        << "\tnode " << child << ": "
                        << TriePath(child, topology) << "\n"

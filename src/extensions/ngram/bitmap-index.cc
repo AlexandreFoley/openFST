@@ -40,7 +40,7 @@ constexpr std::array<uint64_t, 64> LowBitsMasks() {
 constexpr std::array<uint64_t, 64> kLowBitsMasks = LowBitsMasks();
 
 size_t BitmapIndex::Rank1(size_t end) const {
-  DCHECK_LE(end, Bits());
+  DFST_CHECK_LE(end, Bits());
   // TODO(jrosenstock): Remove nullptr support and this special case.
   if (end == 0) return 0;
   // Without this special case, we'd go past the end. It's questionable
@@ -236,7 +236,7 @@ void BitmapIndex::BuildIndex(const uint64_t* bits, size_t num_bits,
   // Absolute counts are uint32s, so this is the most *set* bits we support
   // for now. Just check the number of *input* bits is less than this
   // to keep things simple.
-  DCHECK_LT(num_bits, uint64_t{1} << 32);
+  DFST_CHECK_LT(num_bits, uint64_t{1} << 32);
   bits_ = bits;
   num_bits_ = num_bits;
   rank_index_.clear();
@@ -359,8 +359,8 @@ void BitmapIndex::BuildIndex(const uint64_t* bits, size_t num_bits,
 
 const BitmapIndex::RankIndexEntry& BitmapIndex::FindRankIndexEntry(
     size_t bit_index) const {
-  DCHECK_GE(bit_index, 0);
-  DCHECK_LT(bit_index, rank_index_.back().absolute_ones_count());
+  DFST_CHECK_GE(bit_index, 0);
+  DFST_CHECK_LT(bit_index, rank_index_.back().absolute_ones_count());
 
   const RankIndexEntry* begin = nullptr;
   const RankIndexEntry* end = nullptr;
@@ -369,7 +369,7 @@ const BitmapIndex::RankIndexEntry& BitmapIndex::FindRankIndexEntry(
     end = begin + rank_index_.size();
   } else {
     const uint32_t select_index = bit_index / kBitsPerSelect1Block;
-    DCHECK_LT(select_index + 1, select_1_index_.size());
+    DFST_CHECK_LT(select_index + 1, select_1_index_.size());
 
     // TODO(jrosenstock): It would be nice to handle the exact hit
     // bit_index % kBitsPerSelect1Block == 0 case so we could
@@ -404,15 +404,15 @@ const BitmapIndex::RankIndexEntry& BitmapIndex::FindRankIndexEntry(
   }
 
   const auto& e = *(entry - 1);
-  DCHECK_LE(e.absolute_ones_count(), bit_index);
-  DCHECK_GT(entry->absolute_ones_count(), bit_index);
+  DFST_CHECK_LE(e.absolute_ones_count(), bit_index);
+  DFST_CHECK_GT(entry->absolute_ones_count(), bit_index);
   return e;
 }
 
 const BitmapIndex::RankIndexEntry& BitmapIndex::FindInvertedRankIndexEntry(
     size_t bit_index) const {
-  DCHECK_GE(bit_index, 0);
-  DCHECK_LT(bit_index, num_bits_ - rank_index_.back().absolute_ones_count());
+  DFST_CHECK_GE(bit_index, 0);
+  DFST_CHECK_LT(bit_index, num_bits_ - rank_index_.back().absolute_ones_count());
 
   uint32_t lo = 0, hi = 0;
   if (select_0_index_.empty()) {
@@ -420,7 +420,7 @@ const BitmapIndex::RankIndexEntry& BitmapIndex::FindInvertedRankIndexEntry(
     hi = (num_bits_ + kBitsPerRankIndexEntry - 1) / kBitsPerRankIndexEntry;
   } else {
     const uint32_t select_index = bit_index / kBitsPerSelect0Block;
-    DCHECK_LT(select_index + 1, select_0_index_.size());
+    DFST_CHECK_LT(select_index + 1, select_0_index_.size());
 
     // TODO(jrosenstock): Same special case for exact hit.
 
@@ -429,7 +429,7 @@ const BitmapIndex::RankIndexEntry& BitmapIndex::FindInvertedRankIndexEntry(
          kBitsPerSelect0Block;
   }
 
-  DCHECK_LT(hi, rank_index_.size());
+  DFST_CHECK_LT(hi, rank_index_.size());
   // Linear search never showed an advantage when benchmarking. This may be
   // because the linear search is more complex with the zeros_count computation,
   // or because the ranges are larger, so linear search is triggered less often,
@@ -444,14 +444,14 @@ const BitmapIndex::RankIndexEntry& BitmapIndex::FindInvertedRankIndexEntry(
     }
   }
 
-  DCHECK_LE(lo * kBitsPerRankIndexEntry - rank_index_[lo].absolute_ones_count(),
+  DFST_CHECK_LE(lo * kBitsPerRankIndexEntry - rank_index_[lo].absolute_ones_count(),
             bit_index);
   if ((lo + 1) * kBitsPerRankIndexEntry <= num_bits_) {
-    DCHECK_GT((lo + 1) * kBitsPerRankIndexEntry -
+    DFST_CHECK_GT((lo + 1) * kBitsPerRankIndexEntry -
                   rank_index_[lo + 1].absolute_ones_count(),
               bit_index);
   } else {
-    DCHECK_GT(num_bits_ - rank_index_[lo + 1].absolute_ones_count(), bit_index);
+    DFST_CHECK_GT(num_bits_ - rank_index_[lo + 1].absolute_ones_count(), bit_index);
   }
   return rank_index_[lo];
 }

@@ -175,7 +175,7 @@ class WeightedTester {
       VectorFst<Arc> U1(T1);
       Union(&U1, T2);
       UnionFst<Arc> U2(T1, T2);
-      CHECK(Equiv(U1, U2));
+      FST_CHECK(Equiv(U1, U2));
     }
 
     {
@@ -183,10 +183,10 @@ class WeightedTester {
       VectorFst<Arc> C1(T1);
       Concat(&C1, T2);
       ConcatFst<Arc> C2(T1, T2);
-      CHECK(Equiv(C1, C2));
+      FST_CHECK(Equiv(C1, C2));
       VectorFst<Arc> C3(T2);
       Concat(T1, &C3);
-      CHECK(Equiv(C3, C2));
+      FST_CHECK(Equiv(C3, C2));
     }
 
     {
@@ -194,7 +194,7 @@ class WeightedTester {
       VectorFst<Arc> C1(T1);
       Closure(&C1, CLOSURE_STAR);
       ClosureFst<Arc> C2(T1, CLOSURE_STAR);
-      CHECK(Equiv(C1, C2));
+      FST_CHECK(Equiv(C1, C2));
     }
 
     {
@@ -202,7 +202,7 @@ class WeightedTester {
       VectorFst<Arc> C1(T1);
       Closure(&C1, CLOSURE_PLUS);
       ClosureFst<Arc> C2(T1, CLOSURE_PLUS);
-      CHECK(Equiv(C1, C2));
+      FST_CHECK(Equiv(C1, C2));
     }
 
     {
@@ -216,7 +216,7 @@ class WeightedTester {
       VectorFst<Arc> U4(T1);
       Union(&U4, U3);
 
-      CHECK(Equiv(U1, U4));
+      FST_CHECK(Equiv(U1, U4));
     }
 
     {
@@ -227,7 +227,7 @@ class WeightedTester {
       UnionFst<Arc> U3(T2, T3);
       UnionFst<Arc> U4(T1, U3);
 
-      CHECK(Equiv(U2, U4));
+      FST_CHECK(Equiv(U2, U4));
     }
 
     {
@@ -238,7 +238,7 @@ class WeightedTester {
       UnionFst<Arc> U3(T2, T3);
       UnionFst<Arc> U4(T1, U3);
 
-      CHECK(Equiv(U1, U4));
+      FST_CHECK(Equiv(U1, U4));
     }
 
     {
@@ -252,7 +252,7 @@ class WeightedTester {
       VectorFst<Arc> C4(T1);
       Concat(&C4, C3);
 
-      CHECK(Equiv(C1, C4));
+      FST_CHECK(Equiv(C1, C4));
     }
 
     {
@@ -263,7 +263,7 @@ class WeightedTester {
       ConcatFst<Arc> C3(T2, T3);
       ConcatFst<Arc> C4(T1, C3);
 
-      CHECK(Equiv(C2, C4));
+      FST_CHECK(Equiv(C2, C4));
     }
 
     {
@@ -274,7 +274,7 @@ class WeightedTester {
       ConcatFst<Arc> C3(T2, T3);
       ConcatFst<Arc> C4(T1, C3);
 
-      CHECK(Equiv(C1, C4));
+      FST_CHECK(Equiv(C1, C4));
     }
 
     if (Weight::Properties() & kLeftSemiring) {
@@ -293,7 +293,7 @@ class WeightedTester {
       VectorFst<Arc> U2(C2);
       Union(&U2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     if (Weight::Properties() & kRightSemiring) {
@@ -311,7 +311,7 @@ class WeightedTester {
       VectorFst<Arc> U2(C2);
       Union(&U2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     if (Weight::Properties() & kLeftSemiring) {
@@ -323,7 +323,7 @@ class WeightedTester {
       ConcatFst<Arc> C3(T3, T2);
       UnionFst<Arc> U2(C2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     if (Weight::Properties() & kRightSemiring) {
@@ -335,7 +335,7 @@ class WeightedTester {
       ConcatFst<Arc> C3(T2, T3);
       UnionFst<Arc> U2(C2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     if (Weight::Properties() & kLeftSemiring) {
@@ -348,7 +348,7 @@ class WeightedTester {
       VectorFst<Arc> P(T1);
       Closure(&P, CLOSURE_PLUS);
 
-      CHECK(Equiv(C, P));
+      FST_CHECK(Equiv(C, P));
     }
 
     if (Weight::Properties() & kRightSemiring) {
@@ -361,7 +361,7 @@ class WeightedTester {
       VectorFst<Arc> P(T1);
       Closure(&P, CLOSURE_PLUS);
 
-      CHECK(Equiv(C, P));
+      FST_CHECK(Equiv(C, P));
     }
 
     if (Weight::Properties() & kLeftSemiring) {
@@ -371,7 +371,7 @@ class WeightedTester {
 
       ClosureFst<Arc> P(T1, CLOSURE_PLUS);
 
-      CHECK(Equiv(C, P));
+      FST_CHECK(Equiv(C, P));
     }
 
     if (Weight::Properties() & kRightSemiring) {
@@ -381,7 +381,7 @@ class WeightedTester {
 
       ClosureFst<Arc> P(T1, CLOSURE_PLUS);
 
-      CHECK(Equiv(C, P));
+      FST_CHECK(Equiv(C, P));
     }
   }
 
@@ -392,7 +392,7 @@ class WeightedTester {
       VectorFst<Arc> P1(T);
       Project(&P1, ProjectType::INPUT);
       ProjectFst<Arc> P2(T, ProjectType::INPUT);
-      CHECK(Equiv(P1, P2));
+      FST_CHECK(Equiv(P1, P2));
     }
 
     {
@@ -400,7 +400,7 @@ class WeightedTester {
       VectorFst<Arc> I1(T);
       Invert(&I1);
       InvertFst<Arc> I2(T);
-      CHECK(Equiv(I1, I2));
+      FST_CHECK(Equiv(I1, I2));
     }
 
     {
@@ -410,7 +410,7 @@ class WeightedTester {
       Project(&P1, ProjectType::INPUT);
       Invert(&I1);
       Project(&I1, ProjectType::OUTPUT);
-      CHECK(Equiv(P1, I1));
+      FST_CHECK(Equiv(P1, I1));
     }
 
     {
@@ -420,7 +420,7 @@ class WeightedTester {
       Project(&P1, ProjectType::OUTPUT);
       Invert(&I1);
       Project(&I1, ProjectType::INPUT);
-      CHECK(Equiv(P1, I1));
+      FST_CHECK(Equiv(P1, I1));
     }
 
     {
@@ -428,7 +428,7 @@ class WeightedTester {
       ProjectFst<Arc> P1(T, ProjectType::INPUT);
       InvertFst<Arc> I1(T);
       ProjectFst<Arc> P2(I1, ProjectType::OUTPUT);
-      CHECK(Equiv(P1, P2));
+      FST_CHECK(Equiv(P1, P2));
     }
 
     {
@@ -436,7 +436,7 @@ class WeightedTester {
       ProjectFst<Arc> P1(T, ProjectType::OUTPUT);
       InvertFst<Arc> I1(T);
       ProjectFst<Arc> P2(I1, ProjectType::INPUT);
-      CHECK(Equiv(P1, P2));
+      FST_CHECK(Equiv(P1, P2));
     }
 
     {
@@ -468,13 +468,13 @@ class WeightedTester {
         opairs2[i] = std::make_pair(i, labelset[i]);
       }
       Relabel(&R, ipairs2, opairs2);
-      CHECK(Equiv(R, T));
+      FST_CHECK(Equiv(R, T));
 
       VLOG(1) << "Check on-the-fly relabeling";
       RelabelFst<Arc> Rdelay(T, ipairs1, opairs1);
 
       RelabelFst<Arc> RRdelay(Rdelay, ipairs2, opairs2);
-      CHECK(Equiv(RRdelay, T));
+      FST_CHECK(Equiv(RRdelay, T));
     }
 
     {
@@ -490,7 +490,7 @@ class WeightedTester {
       EncodeMapper<Arc> encoder(encode_props, ENCODE);
       Encode(&D, &encoder);
       Decode(&D, encoder);
-      CHECK(Equiv(D, T));
+      FST_CHECK(Equiv(D, T));
     }
 
     {
@@ -506,7 +506,7 @@ class WeightedTester {
       EncodeFst<Arc> E(T, &encoder);
       VectorFst<Arc> Encoded(E);
       DecodeFst<Arc> D(Encoded, encoder);
-      CHECK(Equiv(D, T));
+      FST_CHECK(Equiv(D, T));
     }
 
     {
@@ -517,14 +517,14 @@ class WeightedTester {
       VectorFst<Arc> F;
       ArcMap(T, &G, to_mapper);
       ArcMap(G, &F, from_mapper);
-      CHECK(Equiv(T, F));
+      FST_CHECK(Equiv(T, F));
     }
 
     {
       VLOG(1) << "Check gallic mappers (delayed).";
       ArcMapFst G(T, ToGallicMapper<Arc>());
       ArcMapFst F(G, FromGallicMapper<Arc>());
-      CHECK(Equiv(T, F));
+      FST_CHECK(Equiv(T, F));
     }
   }
 
@@ -550,7 +550,7 @@ class WeightedTester {
       ComposeFst<Arc> C3(S2, S3);
       ComposeFst<Arc> C4(S1, C3);
 
-      CHECK(Equiv(C2, C4));
+      FST_CHECK(Equiv(C2, C4));
     }
 
     {
@@ -562,7 +562,7 @@ class WeightedTester {
       ComposeFst<Arc> C3(S1, S3);
       UnionFst<Arc> U2(C2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     {
@@ -574,7 +574,7 @@ class WeightedTester {
       ComposeFst<Arc> C3(S2, S3);
       UnionFst<Arc> U2(C2, C3);
 
-      CHECK(Equiv(C1, U2));
+      FST_CHECK(Equiv(C1, U2));
     }
 
     VectorFst<Arc> A1(S1);
@@ -588,7 +588,7 @@ class WeightedTester {
       VLOG(1) << "Check intersection is commutative.";
       IntersectFst<Arc> I1(A1, A2);
       IntersectFst<Arc> I2(A2, A1);
-      CHECK(Equiv(I1, I2));
+      FST_CHECK(Equiv(I1, I2));
     }
 
     {
@@ -600,25 +600,25 @@ class WeightedTester {
       ComposeFst<Arc> C3(S1, S2,
                          ComposeFstOptions<Arc, M, MatchComposeFilter<M>>());
 
-      CHECK(Equiv(C1, C2));
-      CHECK(Equiv(C1, C3));
+      FST_CHECK(Equiv(C1, C2));
+      FST_CHECK(Equiv(C1, C3));
 
       if ((Weight::Properties() & kIdempotent) ||
           S1.Properties(kNoOEpsilons, false) ||
           S2.Properties(kNoIEpsilons, false)) {
         ComposeFst<Arc> C4(
             S1, S2, ComposeFstOptions<Arc, M, TrivialComposeFilter<M>>());
-        CHECK(Equiv(C1, C4));
+        FST_CHECK(Equiv(C1, C4));
         ComposeFst<Arc> C5(
             S1, S2, ComposeFstOptions<Arc, M, NoMatchComposeFilter<M>>());
-        CHECK(Equiv(C1, C5));
+        FST_CHECK(Equiv(C1, C5));
       }
 
       if (S1.Properties(kNoOEpsilons, false) &&
           S2.Properties(kNoIEpsilons, false)) {
         ComposeFst<Arc> C6(S1, S2,
                            ComposeFstOptions<Arc, M, NullComposeFilter<M>>());
-        CHECK(Equiv(C1, C6));
+        FST_CHECK(Equiv(C1, C6));
       }
     }
 
@@ -627,7 +627,7 @@ class WeightedTester {
       VectorFst<Arc> C1, C2;
       Compose(S1, S2, &C1);
       LookAheadCompose(S1, S2, &C2);
-      CHECK(Equiv(C1, C2));
+      FST_CHECK(Equiv(C1, C2));
     }
   }
 
@@ -640,7 +640,7 @@ class WeightedTester {
       VLOG(1) << "Check arc sorted Fst is equivalent to its input.";
       VectorFst<Arc> S1(T);
       ArcSort(&S1, icomp);
-      CHECK(Equiv(T, S1));
+      FST_CHECK(Equiv(T, S1));
     }
 
     {
@@ -648,7 +648,7 @@ class WeightedTester {
       VectorFst<Arc> S1(T);
       ArcSort(&S1, icomp);
       ArcSortFst<Arc, ILabelCompare<Arc>> S2(T, icomp);
-      CHECK(Equiv(S1, S2));
+      FST_CHECK(Equiv(S1, S2));
     }
 
     {
@@ -659,14 +659,14 @@ class WeightedTester {
       Invert(&S2);
       ArcSort(&S2, ocomp);
       Invert(&S2);
-      CHECK(Equiv(S1, S2));
+      FST_CHECK(Equiv(S1, S2));
     }
 
     {
       VLOG(1) << "Check topologically sorted Fst is equivalent to its input.";
       VectorFst<Arc> S1(T);
       TopSort(&S1);
-      CHECK(Equiv(T, S1));
+      FST_CHECK(Equiv(T, S1));
     }
 
     {
@@ -677,7 +677,7 @@ class WeightedTester {
         bool require_superinitial = i == 1;
         Reverse(T, &R1, require_superinitial);
         Reverse(R1, &R2, require_superinitial);
-        CHECK(Equiv(T, R2));
+        FST_CHECK(Equiv(T, R2));
       }
     }
   }
@@ -693,7 +693,7 @@ class WeightedTester {
       VLOG(1) << "Check connected FST is equivalent to its input.";
       VectorFst<Arc> C1(T);
       Connect(&C1);
-      CHECK(Equiv(T, C1));
+      FST_CHECK(Equiv(T, C1));
     }
 
     if ((wprops & kSemiring) == kSemiring &&
@@ -701,12 +701,12 @@ class WeightedTester {
       VLOG(1) << "Check epsilon-removed FST is equivalent to its input.";
       VectorFst<Arc> R1(T);
       RmEpsilon(&R1);
-      CHECK(Equiv(T, R1));
+      FST_CHECK(Equiv(T, R1));
 
       VLOG(1) << "Check destructive and delayed epsilon removal"
               << "are equivalent.";
       RmEpsilonFst<Arc> R2(T);
-      CHECK(Equiv(R1, R2));
+      FST_CHECK(Equiv(R1, R2));
 
       VLOG(1) << "Check an FST with a large proportion"
               << " of epsilon transitions:";
@@ -729,24 +729,24 @@ class WeightedTester {
       RmEpsilon(&U1);
       ShortestDistance(U1, &d, true);
       Weight w1 = U1.Start() < d.size() ? d[U1.Start()] : Weight::Zero();
-      CHECK(ApproxEqual(w, w1, kTestDelta));
+      FST_CHECK(ApproxEqual(w, w1, kTestDelta));
       RmEpsilonFst<Arc> U2(U);
       ShortestDistance(U2, &d, true);
       Weight w2 = U2.Start() < d.size() ? d[U2.Start()] : Weight::Zero();
-      CHECK(ApproxEqual(w, w2, kTestDelta));
+      FST_CHECK(ApproxEqual(w, w2, kTestDelta));
     }
 
     if ((wprops & kSemiring) == kSemiring && tprops & kAcyclic) {
       VLOG(1) << "Check determinized FSA is equivalent to its input.";
       DeterminizeFst<Arc> D(A);
-      CHECK(Equiv(A, D));
+      FST_CHECK(Equiv(A, D));
 
       {
         VLOG(1) << "Check determinized FST is equivalent to its input.";
         DeterminizeFstOptions<Arc> opts;
         opts.type = DETERMINIZE_NONFUNCTIONAL;
         DeterminizeFst<Arc> DT(T, opts);
-        CHECK(Equiv(T, DT));
+        FST_CHECK(Equiv(T, DT));
       }
 
       if ((wprops & (kPath | kCommutative)) == (kPath | kCommutative)) {
@@ -756,8 +756,8 @@ class WeightedTester {
         DeterminizeOptions<Arc> opts;
         opts.weight_threshold = threshold;
         Determinize(A, &P, opts);
-        CHECK(P.Properties(kIDeterministic, true));
-        CHECK(PruneEquiv(A, P, threshold));
+        FST_CHECK(P.Properties(kIDeterministic, true));
+        FST_CHECK(PruneEquiv(A, P, threshold));
       }
 
       if ((wprops & kPath) == kPath) {
@@ -773,8 +773,8 @@ class WeightedTester {
         DeterminizeOptions<Arc> opts;
         opts.type = DETERMINIZE_DISAMBIGUATE;
         Determinize(R, &M, opts);
-        CHECK(M.Properties(kIDeterministic, true));
-        CHECK(MinRelated(M, R));
+        FST_CHECK(M.Properties(kIDeterministic, true));
+        FST_CHECK(MinRelated(M, R));
       }
 
       int n;
@@ -784,8 +784,8 @@ class WeightedTester {
         VectorFst<Arc> M(D);
         n = M.NumStates();
         Minimize(&M, static_cast<MutableFst<Arc> *>(nullptr), kDelta);
-        CHECK(Equiv(D, M));
-        CHECK(M.NumStates() <= n);
+        FST_CHECK(Equiv(D, M));
+        FST_CHECK(M.NumStates() <= n);
         n = M.NumStates();
       }
 
@@ -805,7 +805,7 @@ class WeightedTester {
         Reverse(DR, &RD);
         DeterminizeFst<Arc> DRD(RD);
         VectorFst<Arc> M(DRD);
-        CHECK_EQ(n + 1, M.NumStates());  // Accounts for the epsilon transition
+        FST_CHECK_EQ(n + 1, M.NumStates());  // Accounts for the epsilon transition
                                          // to the initial state
       }
     }
@@ -815,9 +815,9 @@ class WeightedTester {
       VectorFst<Arc> R(A), D;
       RmEpsilon(&R);
       Disambiguate(R, &D);
-      CHECK(Equiv(R, D));
+      FST_CHECK(Equiv(R, D));
       VLOG(1) << "Check disambiguated FSA is unambiguous";
-      CHECK(Unambiguous(D));
+      FST_CHECK(Unambiguous(D));
 
       /* TODO(riley): find out why this fails
       if ((wprops & (kPath | kCommutative)) == (kPath | kCommutative)) {
@@ -827,8 +827,8 @@ class WeightedTester {
         DisambiguateOptions<Arc> opts;
         opts.weight_threshold = threshold;
         Disambiguate(R, &P, opts);
-        CHECK(Unambiguous(P));
-        CHECK(PruneEquiv(A, P, threshold));
+        FST_CHECK(Unambiguous(P));
+        FST_CHECK(PruneEquiv(A, P, threshold));
       }
       */
     }
@@ -843,10 +843,10 @@ class WeightedTester {
       }
 
       Reweight(&RI, potential, REWEIGHT_TO_INITIAL);
-      CHECK(Equiv(T, RI));
+      FST_CHECK(Equiv(T, RI));
 
       Reweight(&RF, potential, REWEIGHT_TO_FINAL);
-      CHECK(Equiv(T, RF));
+      FST_CHECK(Equiv(T, RF));
     }
 
     if ((wprops & kIdempotent) || (tprops & kAcyclic)) {
@@ -855,29 +855,29 @@ class WeightedTester {
       if (wprops & kRightSemiring) {
         VectorFst<Arc> P1;
         Push<Arc, REWEIGHT_TO_FINAL>(T, &P1, kPushLabels);
-        CHECK(Equiv(T, P1));
+        FST_CHECK(Equiv(T, P1));
 
         VectorFst<Arc> P2;
         Push<Arc, REWEIGHT_TO_FINAL>(T, &P2, kPushWeights);
-        CHECK(Equiv(T, P2));
+        FST_CHECK(Equiv(T, P2));
 
         VectorFst<Arc> P3;
         Push<Arc, REWEIGHT_TO_FINAL>(T, &P3, kPushLabels | kPushWeights);
-        CHECK(Equiv(T, P3));
+        FST_CHECK(Equiv(T, P3));
       }
 
       // Pushing towards the initial state.
       if (wprops & kLeftSemiring) {
         VectorFst<Arc> P1;
         Push<Arc, REWEIGHT_TO_INITIAL>(T, &P1, kPushLabels);
-        CHECK(Equiv(T, P1));
+        FST_CHECK(Equiv(T, P1));
 
         VectorFst<Arc> P2;
         Push<Arc, REWEIGHT_TO_INITIAL>(T, &P2, kPushWeights);
-        CHECK(Equiv(T, P2));
+        FST_CHECK(Equiv(T, P2));
         VectorFst<Arc> P3;
         Push<Arc, REWEIGHT_TO_INITIAL>(T, &P3, kPushLabels | kPushWeights);
-        CHECK(Equiv(T, P3));
+        FST_CHECK(Equiv(T, P3));
       }
     }
 
@@ -891,7 +891,7 @@ class WeightedTester {
           Prune(&P1, threshold);
           VectorFst<Arc> P2;
           Prune(T, &P2, threshold);
-          CHECK(Equiv(P1, P2));
+          FST_CHECK(Equiv(P1, P2));
         }
 
         {
@@ -904,7 +904,7 @@ class WeightedTester {
           Reverse(T, &R);
           Prune(&R, threshold.Reverse());
           Reverse(R, &P2);
-          CHECK(Equiv(P1, P2));
+          FST_CHECK(Equiv(P1, P2));
         }
         {
           VLOG(1) << "Check: ShortestDistance(A - prune(A))"
@@ -912,14 +912,14 @@ class WeightedTester {
           const Weight threshold = generate_();
           VectorFst<Arc> P;
           Prune(A, &P, threshold);
-          CHECK(PruneEquiv(A, P, threshold));
+          FST_CHECK(PruneEquiv(A, P, threshold));
         }
       }
     }
     if (tprops & kAcyclic) {
       VLOG(1) << "Check synchronize(T) equiv T";
       SynchronizeFst<Arc> S(T);
-      CHECK(Equiv(T, S));
+      FST_CHECK(Equiv(T, S));
     }
   }
 
@@ -937,7 +937,7 @@ class WeightedTester {
         ShortestPath(T, &path);
         Weight tsum = ShortestDistance(T);
         Weight psum = ShortestDistance(path);
-        CHECK(ApproxEqual(tsum, psum, kTestDelta));
+        FST_CHECK(ApproxEqual(tsum, psum, kTestDelta));
       }
 
       if ((wprops & (kPath | kSemiring)) == (kPath | kSemiring)) {
@@ -965,7 +965,7 @@ class WeightedTester {
             ShortestPath(R, &path, 1, false, false, Weight::Zero(), kNoStateId,
                          kDelta);
             Weight dsum = ShortestDistance(path, kDelta);
-            CHECK(ApproxEqual(nsum, dsum, kTestDelta));
+            FST_CHECK(ApproxEqual(nsum, dsum, kTestDelta));
             ArcMap(&path, RmWeightMapper<Arc>());
             VectorFst<Arc> S;
             Difference(R, path, &S);
@@ -981,8 +981,8 @@ class WeightedTester {
   template <class A>
   bool Equiv(const Fst<A> &fst1, const Fst<A> &fst2) {
     VLOG(1) << "Check FSTs for sanity (including property bits).";
-    CHECK(Verify(fst1));
-    CHECK(Verify(fst2));
+    FST_CHECK(Verify(fst1));
+    FST_CHECK(Verify(fst2));
 
     // Ensures seed used once per instantiation.
     static const UniformArcSelector<A> uniform_selector(seed_);
@@ -1042,8 +1042,8 @@ class WeightedTester {
   template <class A>
   bool PruneEquiv(const Fst<A> &fst, const Fst<A> &pfst, Weight threshold) {
     VLOG(1) << "Check FSTs for sanity (including property bits).";
-    CHECK(Verify(fst));
-    CHECK(Verify(pfst));
+    FST_CHECK(Verify(fst));
+    FST_CHECK(Verify(pfst));
 
     DifferenceFst<Arc> D(fst, DeterminizeFst<Arc>(RmEpsilonFst<Arc>(
                                   ArcMapFst(pfst, RmWeightMapper<Arc>()))));
@@ -1124,16 +1124,16 @@ class UnweightedTester<StdArc> {
       VectorFst<Arc> U(A1);
       Union(&U, A2);
 
-      CHECK(Subset(A1, U));
-      CHECK(Subset(A2, U));
+      FST_CHECK(Subset(A1, U));
+      FST_CHECK(Subset(A2, U));
     }
 
     {
       VLOG(1) << "Check the union contains its arguments (delayed).";
       UnionFst<Arc> U(A1, A2);
 
-      CHECK(Subset(A1, U));
-      CHECK(Subset(A2, U));
+      FST_CHECK(Subset(A1, U));
+      FST_CHECK(Subset(A2, U));
     }
 
     {
@@ -1144,7 +1144,7 @@ class UnweightedTester<StdArc> {
 
       VectorFst<Arc> S(A1);
       Closure(&S, CLOSURE_STAR);
-      CHECK(Subset(C, S));
+      FST_CHECK(Subset(C, S));
     }
 
     {
@@ -1155,7 +1155,7 @@ class UnweightedTester<StdArc> {
         C = std::make_unique<ConcatFst<Arc>>(*C, A1);
       }
       ClosureFst<Arc> S(A1, CLOSURE_STAR);
-      CHECK(Subset(*C, S));
+      FST_CHECK(Subset(*C, S));
     }
   }
 
@@ -1175,8 +1175,8 @@ class UnweightedTester<StdArc> {
     {
       VLOG(1) << "Check the intersection is contained in its arguments.";
       IntersectFst<Arc> I1(S1, S2);
-      CHECK(Subset(I1, S1));
-      CHECK(Subset(I1, S2));
+      FST_CHECK(Subset(I1, S1));
+      FST_CHECK(Subset(I1, S2));
     }
 
     {
@@ -1189,7 +1189,7 @@ class UnweightedTester<StdArc> {
       ArcSortFst<Arc, ILabelCompare<Arc>> S4(U3, comp);
       IntersectFst<Arc> I2(U2, S4);
 
-      CHECK(Equiv(U1, I2));
+      FST_CHECK(Equiv(U1, I2));
     }
 
     VectorFst<Arc> C1;
@@ -1202,13 +1202,13 @@ class UnweightedTester<StdArc> {
     {
       VLOG(1) << "Check S U S' = Sigma*";
       UnionFst<Arc> U(S1, C1);
-      CHECK(Equiv(U, univ_fsa_));
+      FST_CHECK(Equiv(U, univ_fsa_));
     }
 
     {
       VLOG(1) << "Check S n S' = {}";
       IntersectFst<Arc> I(S1, C1);
-      CHECK(Equiv(I, zero_fsa_));
+      FST_CHECK(Equiv(I, zero_fsa_));
     }
 
     {
@@ -1218,7 +1218,7 @@ class UnweightedTester<StdArc> {
       IntersectFst<Arc> I(S1, S2);
       VectorFst<Arc> C3;
       Complement(I, &C3);
-      CHECK(Equiv(U, C3));
+      FST_CHECK(Equiv(U, C3));
     }
 
     {
@@ -1228,7 +1228,7 @@ class UnweightedTester<StdArc> {
       UnionFst<Arc> U(S1, S2);
       VectorFst<Arc> C3;
       Complement(U, &C3);
-      CHECK(Equiv(I, C3));
+      FST_CHECK(Equiv(I, C3));
     }
   }
 
@@ -1237,7 +1237,7 @@ class UnweightedTester<StdArc> {
     {
       VLOG(1) << "Check determinized FSA is equivalent to its input.";
       DeterminizeFst<Arc> D(A);
-      CHECK(Equiv(A, D));
+      FST_CHECK(Equiv(A, D));
     }
 
     {
@@ -1246,7 +1246,7 @@ class UnweightedTester<StdArc> {
       RmEpsilon(&R);
 
       Disambiguate(R, &D);
-      CHECK(Equiv(R, D));
+      FST_CHECK(Equiv(R, D));
     }
 
     {
@@ -1257,7 +1257,7 @@ class UnweightedTester<StdArc> {
         DeterminizeFst<Arc> D(R);
         VectorFst<Arc> M(D);
         Minimize(&M, static_cast<MutableFst<Arc> *>(nullptr), kDelta);
-        CHECK(Equiv(A, M));
+        FST_CHECK(Equiv(A, M));
         n = M.NumStates();
       }
 
@@ -1272,7 +1272,7 @@ class UnweightedTester<StdArc> {
         Reverse(DR, &RD);
         DeterminizeFst<Arc> DRD(RD);
         VectorFst<Arc> M(DRD);
-        CHECK_EQ(n + 1, M.NumStates());  // Accounts for the epsilon transition
+        FST_CHECK_EQ(n + 1, M.NumStates());  // Accounts for the epsilon transition
                                          // to the initial state.
       }
     }
@@ -1281,8 +1281,8 @@ class UnweightedTester<StdArc> {
   // Tests if two FSAS are equivalent.
   bool Equiv(const Fst<Arc> &fsa1, const Fst<Arc> &fsa2) {
     VLOG(1) << "Check FSAs for sanity (including property bits).";
-    CHECK(Verify(fsa1));
-    CHECK(Verify(fsa2));
+    FST_CHECK(Verify(fsa1));
+    FST_CHECK(Verify(fsa2));
 
     VectorFst<Arc> vfsa1(fsa1);
     VectorFst<Arc> vfsa2(fsa2);
@@ -1310,7 +1310,7 @@ class UnweightedTester<StdArc> {
     bool equiv2 = ufsa.NumStates() == 0;
 
     // Checks both equivalence tests match.
-    CHECK((equiv1 && equiv2) || (!equiv1 && !equiv2));
+    FST_CHECK((equiv1 && equiv2) || (!equiv1 && !equiv2));
 
     return equiv1;
   }
@@ -1318,8 +1318,8 @@ class UnweightedTester<StdArc> {
   // Tests if FSA1 is a subset of FSA2 (disregarding weights).
   bool Subset(const Fst<Arc> &fsa1, const Fst<Arc> &fsa2) {
     VLOG(1) << "Check FSAs (incl. property bits) for sanity";
-    CHECK(Verify(fsa1));
-    CHECK(Verify(fsa2));
+    FST_CHECK(Verify(fsa1));
+    FST_CHECK(Verify(fsa2));
 
     VectorFst<StdArc> vfsa1;
     VectorFst<StdArc> vfsa2;
