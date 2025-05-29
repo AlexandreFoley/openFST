@@ -63,11 +63,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Find OpenFST package
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}")
-find_package(OpenFst REQUIRED)
+find_package(OpenFST REQUIRED)
 
 # Create test executable
 add_executable(test_fst test_fst.cc)
-target_link_libraries(test_fst PRIVATE OpenFst::fst)
+target_link_libraries(test_fst PRIVATE OpenFST::fst)
 EOL
 
 # Build the test project

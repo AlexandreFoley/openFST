@@ -1,0 +1,15 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+include("${CMAKE_CURRENT_LIST_DIR}/OpenFSTTargets.cmake")
+
+# For compatibility with older versions
+set_and_check(OpenFST_INCLUDE_DIR "@PACKAGE_CMAKE_INSTALL_INCLUDEDIR@")
+set_and_check(OpenFST_LIB_DIR "@PACKAGE_CMAKE_INSTALL_LIBDIR@")
+set(OpenFST_LIBRARIES OpenFST::fst)
+
+if(@ENABLE_FSTSCRIPT@)
+  list(APPEND OpenFST_LIBRARIES OpenFST::fstscript)
+endif()
+
+check_required_components(OpenFST)

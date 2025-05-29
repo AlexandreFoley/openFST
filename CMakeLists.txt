@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(OpenFst VERSION 1.8.4 LANGUAGES CXX)
+project(OpenFST VERSION 1.8.4 LANGUAGES CXX)
 
 # Options to match Bazel configurations
 option(USE_LIBCPP "Use libc++ instead of stdlibc++" OFF)
@@ -120,7 +120,7 @@ endif(ENABLE_FSTSCRIPT)
 # Installation rules using generator expressions
 include(GNUInstallDirs)
 install(TARGETS fst fstscript
-  EXPORT OpenFstTargets
+  EXPORT OpenFSTTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -140,31 +140,31 @@ if(ENABLE_FSTSCRIPT)
 endif()
 
 # Export targets for usage in other projects
-install(EXPORT OpenFstTargets
-  FILE OpenFstTargets.cmake
-  NAMESPACE OpenFst::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
+install(EXPORT OpenFSTTargets
+  FILE OpenFSTTargets.cmake
+  NAMESPACE OpenFST::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFST
 )
 
 # Generate and install CMake config files for find_package support
 include(CMakePackageConfigHelpers)
 configure_package_config_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenFstConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenFSTConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFSTConfig.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFST
   PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR
 )
 
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfigVersion.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFSTConfigVersion.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion
 )
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/OpenFstConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFst
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFSTConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/OpenFSTConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/OpenFST
 )
 
 # Testing setup
