@@ -39,9 +39,13 @@ inline constexpr uint8_t kEqualCompatSymbols = 0x08;
 inline constexpr uint8_t kEqualAll =
     kEqualFsts | kEqualFstTypes | kEqualCompatProperties | kEqualCompatSymbols;
 
+
+
+
+template <class Delta >
 class WeightApproxEqual {
  public:
-  explicit WeightApproxEqual(float delta) : delta_(delta) {}
+  explicit WeightApproxEqual(Delta delta) : delta_(delta) {}
 
   // We use two weight types to avoid some conflicts caused by
   // conversions.
@@ -51,7 +55,21 @@ class WeightApproxEqual {
   }
 
  private:
-  const float delta_;
+  const Delta delta_;
+};
+
+/**
+ * @brief Generic implementation of SelectWeightApproxEqual.
+ * 
+ * Default to the float version of WeightApproxEqual, the behavior before this structure existed.
+ * Implement a specialization for your weight type if you need a different behavior.
+ * 
+ * @note This WeightApproxEqual seems to be used only in the shortest-distance algorithm, which previously enforced a float type for kdelta.
+ * 
+ */
+template <class Weight>
+struct SelectWeightApproxEqual {
+  using WAE = WeightApproxEqual<float>;
 };
 
 // Tests if two FSTs have the same states and arcs in the same order (when
@@ -177,7 +195,7 @@ bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, float delta = kDelta,
 template <class Arc>
 bool Equal(const Fst<Arc> &fst1, const Fst<Arc> &fst2, double delta,
            uint8_t etype = kEqualFsts) {
-  return Equal(fst1, fst2, WeightApproxEqual(static_cast<float>(delta)), etype);
+  return Equal(fst1, fst2, WeightApproxEqual(delta), etype);
 }
 
 }  // namespace fst

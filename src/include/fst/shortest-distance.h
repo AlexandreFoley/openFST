@@ -80,7 +80,8 @@ namespace internal {
 // should not be modified by the user between these calls. The Error() method
 // returns true iff an error was encountered.
 template <class Arc, class Queue, class ArcFilter,
-          class WeightEqual = WeightApproxEqual>
+          class WeightEqual = typename SelectWeightApproxEqual<
+              typename Arc::Weight>::WAE> 
 class ShortestDistanceState {
  public:
   using StateId = typename Arc::StateId;
